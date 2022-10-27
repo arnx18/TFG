@@ -393,6 +393,9 @@ namespace IATK
                     case AbstractVisualisation.VisualisationTypes.SCATTERPLOT:
                         ShowSimpleVisualisationMenu(ref dirtyFlags);
                         break;
+                    case AbstractVisualisation.VisualisationTypes.HEIGHTMAP:
+                        ShowSimpleVisualisationMenu(ref dirtyFlags);
+                        break;
                     case AbstractVisualisation.VisualisationTypes.SCATTERPLOT_MATRIX:
                         ShowScatterplotMatrixMenu(ref dirtyFlags);
                         break;
