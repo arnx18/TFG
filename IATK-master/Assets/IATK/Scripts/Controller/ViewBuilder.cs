@@ -44,6 +44,19 @@ namespace IATK
             }
         }
 
+        public List<Vector3> Positions
+        {
+            get
+            {
+                return positions;
+            }
+
+            set
+            {
+                positions = value;
+            }
+        }
+
         private MeshTopology myMeshTopolgy;                        // The topology to use for the mesh
 
         private List<Vector3> positions;                            // The positions of the data

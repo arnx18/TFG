@@ -401,6 +401,9 @@ namespace IATK
                         break;
                     case AbstractVisualisation.VisualisationTypes.GRAPH_LAYOUT:
                         break;
+                    case AbstractVisualisation.VisualisationTypes.HEIGHTMAP:
+                        ShowSimpleVisualisationMenu(ref dirtyFlags);
+                        break;
                     default:
                         break;
                 }

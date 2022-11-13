@@ -202,6 +202,14 @@ namespace IATK
                 case AbstractVisualisation.VisualisationTypes.GRAPH_LAYOUT:
                     break;
 
+                case AbstractVisualisation.VisualisationTypes.HEIGHTMAP:
+                    theVisualizationObject = gameObject.AddComponent<HeightmapVisualisation>();// new Simple2D3DVisualisation();                    
+                    theVisualizationObject.visualisationReference = this;
+
+                    theVisualizationObject.CreateVisualisation();
+
+                    break;
+
                 default:
                     break;
             }
@@ -475,6 +483,41 @@ namespace IATK
                         
                     case AbstractVisualisation.VisualisationTypes.GRAPH_LAYOUT:
                         break;
+
+                    case AbstractVisualisation.VisualisationTypes.HEIGHTMAP:
+                        if (theVisualizationObject.creationConfiguration.Axies.ContainsKey(CreationConfiguration.Axis.X)) xDimension.Attribute = theVisualizationObject.creationConfiguration.Axies[CreationConfiguration.Axis.X];
+                        if (theVisualizationObject.creationConfiguration.Axies.ContainsKey(CreationConfiguration.Axis.Y)) yDimension.Attribute = theVisualizationObject.creationConfiguration.Axies[CreationConfiguration.Axis.Y];
+                        if (theVisualizationObject.creationConfiguration.Axies.ContainsKey(CreationConfiguration.Axis.Z)) zDimension.Attribute = theVisualizationObject.creationConfiguration.Axies[CreationConfiguration.Axis.Z];
+
+                        linkingDimension = string.IsNullOrEmpty(theVisualizationObject.creationConfiguration.LinkingDimension) ? "Undefined" : theVisualizationObject.creationConfiguration.LinkingDimension;
+                        geometry = theVisualizationObject.creationConfiguration.Geometry;
+                        minSize = theVisualizationObject.creationConfiguration.MinSize;
+                        maxSize = theVisualizationObject.creationConfiguration.MaxSize;
+
+                        theVisualizationObject.CreateVisualisation();
+
+                        updateViewProperties(AbstractVisualisation.PropertyType.SizeValues);
+                        updateViewProperties(AbstractVisualisation.PropertyType.X);
+                        updateViewProperties(AbstractVisualisation.PropertyType.Y);
+                        updateViewProperties(AbstractVisualisation.PropertyType.Z);
+                        updateViewProperties(AbstractVisualisation.PropertyType.GeometryType);
+                        updateViewProperties(AbstractVisualisation.PropertyType.LinkingDimension);
+
+                        colourDimension = string.IsNullOrEmpty(theVisualizationObject.creationConfiguration.ColourDimension) ? "Undefined" : theVisualizationObject.creationConfiguration.ColourDimension;
+                        sizeDimension = string.IsNullOrEmpty(theVisualizationObject.creationConfiguration.SizeDimension) ? "Undefined" : theVisualizationObject.creationConfiguration.SizeDimension;
+                        dimensionColour = theVisualizationObject.creationConfiguration.colourKeys;
+                        colour = theVisualizationObject.creationConfiguration.colour;
+
+                        updateViewProperties(AbstractVisualisation.PropertyType.Size);
+                        updateViewProperties(AbstractVisualisation.PropertyType.Colour);
+
+                        width = theVisualizationObject.creationConfiguration.VisualisationWidth;
+                        height = theVisualizationObject.creationConfiguration.VisualisationHeight;
+                        depth = theVisualizationObject.creationConfiguration.VisualisationDepth;
+
+                        updateViewProperties(AbstractVisualisation.PropertyType.Scaling);
+
+                        break; 
 
                     default:
                         break;
