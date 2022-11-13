@@ -68,15 +68,7 @@ namespace IATK
                 creationConfiguration.colour = visualisationReference.colour;
             }
 
-            View view = CreateSimpleVisualisation(creationConfiguration);
-
-            if (view != null)
-            {
-                view.transform.localPosition = Vector3.zero;
-                view.transform.SetParent(transform, false);
-
-                viewList.Add(view);
-            }
+            CreateSimpleVisualisation(creationConfiguration);
 
             if (viewList.Count > 0 && visualisationReference.colourDimension != "Undefined")
             {
@@ -546,7 +538,7 @@ namespace IATK
         // SPECIFIC VISUALISATION METHODS
         // ******************************
         
-        private View CreateSimpleVisualisation(CreationConfiguration configuration)
+        private void CreateSimpleVisualisation(CreationConfiguration configuration)
         {
 
             if (visualisationReference.dataSource != null)
@@ -572,57 +564,12 @@ namespace IATK
                     destroyView();
 
                     size = Convert.ToInt32(Math.Ceiling(Math.Sqrt(visualisationReference.dataSource.DataCount)));
+                    positions = builder.Positions.ToArray();
 
-                    rendering(ref builder);
-
-                    //return the appropriate geometry view
-                    return ApplyGeometryAndRendering(creationConfiguration, ref builder);
-                }
-
-            }
-
-            return null;
-
-        }
-
-        private void rendering(ref ViewBuilder builder) {
-
-            positions = builder.Positions.ToArray();
-
-            CreateMesh();
-
-            CreateMeshRenderer();
-            
-        }
-
-        // *************************************************************
-        // ********************  UNITY METHODS  ************************
-        // *************************************************************
-        /*void Reset() {
-
-            meshFilter = GetComponent<MeshFilter>();
-
-            CreateDefaultGradient();
-
-            meshFilter.sharedMesh = CreateMesh();
-
-            CreateMeshRenderer();
-        }*/
-
-        void Update() {
-            
-            if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length) {
-                CreateMesh();
-                return;
-            }
-
-            for(int i = 0; i < gradient.colorKeys.Length; i++) {
-                if (!IsColorKeyApproxEqual(gradient.colorKeys[i], cacheGradient.colorKeys[i])) {
                     CreateMesh();
-                    return;
+                    CreateMeshRenderer();
                 }
             }
-
         }
 
         void CreateMesh() {
@@ -710,11 +657,11 @@ namespace IATK
 
             MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
             Material material = new Material(Shader.Find("IATK/Heightmap"));
-            meshRenderer.allowOcclusionWhenDynamic = false;
-            meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            meshRenderer.receiveShadows = false;
-            meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
-            meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+            //meshRenderer.allowOcclusionWhenDynamic = false;
+            //meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            //meshRenderer.receiveShadows = true;
+            //meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+            //meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
             meshRenderer.sharedMaterial = material;
         }
 
@@ -725,6 +672,31 @@ namespace IATK
             if(Mathf.Abs(colorKey1.color.g - colorkey2.color.g) > 0.01f) return false;
             if(Mathf.Abs(colorKey1.color.b - colorkey2.color.b) > 0.01f) return false;
             return true;
+        }
+
+        // *************************************************************
+        // ********************  UNITY METHODS  ************************
+        // *************************************************************
+
+        void Update() {
+
+            if (visualisationReference.xDimension.Attribute != "" && visualisationReference.xDimension.Attribute != "Undefined"
+                && visualisationReference.yDimension.Attribute != "" && visualisationReference.yDimension.Attribute != "Undefined"
+                && visualisationReference.zDimension.Attribute != "" && visualisationReference.zDimension.Attribute != "Undefined") {
+                
+                if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length) {
+                    CreateMesh();
+                    return;
+                }
+
+                for(int i = 0; i < gradient.colorKeys.Length; i++) {
+                    if (!IsColorKeyApproxEqual(gradient.colorKeys[i], cacheGradient.colorKeys[i])) {
+                        CreateMesh();
+                        return;
+                    }
+                }
+            }
+            
         }
 
         /*private void OnDrawGizmos() {
