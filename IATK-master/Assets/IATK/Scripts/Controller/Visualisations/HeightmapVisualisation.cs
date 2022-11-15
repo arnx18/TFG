@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Text;
 using System;
 
 namespace IATK
@@ -24,7 +25,8 @@ namespace IATK
         [HideInInspector]
         public MeshFilter meshFilter;
 
-        private int size;
+        private int xSize;
+        private int zSize;
         private float minTerrainHeight;
         private float maxTerrainHeight;
 
@@ -562,8 +564,19 @@ namespace IATK
                     
                     //destroy the view to clean the big mesh
                     destroyView();
+                
+                }
 
-                    size = Convert.ToInt32(Math.Ceiling(Math.Sqrt(visualisationReference.dataSource.DataCount)));
+                if (visualisationReference.xDimension.Attribute != "" && visualisationReference.xDimension.Attribute != "Undefined"
+                    && visualisationReference.yDimension.Attribute != "" && visualisationReference.yDimension.Attribute != "Undefined"
+                    && visualisationReference.zDimension.Attribute != "" && visualisationReference.zDimension.Attribute != "Undefined") {
+
+                    int indX = Array.IndexOf(visualisationReference.dataSource.Select(m => m.Identifier).ToArray(), visualisationReference.xDimension.Attribute);
+                    int indZ = Array.IndexOf(visualisationReference.dataSource.Select(m => m.Identifier).ToArray(), visualisationReference.zDimension.Attribute);
+
+                    xSize = visualisationReference.dataSource[indX].MetaData.categoryCount;
+                    zSize = visualisationReference.dataSource[indZ].MetaData.categoryCount;
+
                     positions = builder.Positions.ToArray();
 
                     CreateMesh();
@@ -585,19 +598,19 @@ namespace IATK
 
             mesh.vertices = positions;
 
-            int[] triangles = new int[(size - 1) * (size - 1) * 6];
+            int[] triangles = new int[(xSize - 1) * (zSize - 1) * 6];
 
             int vert = 0;
             int tris = 0;
 
-            for (int z = 0; z < size - 1; z++) {
-                for (int x = 0; x < size - 1; x++) {
-                    triangles[tris] = vert;
-                    triangles[tris + 1] = vert + size;
-                    triangles[tris + 2] = vert + 1;
+            for (int z = 0; z < zSize - 1; z++) {
+                for (int x = 0; x < xSize - 1; x++) {
+                    triangles[tris] = vert + 1;
+                    triangles[tris + 1] = vert + xSize;
+                    triangles[tris + 2] = vert;
                     triangles[tris + 3] = vert + 1;
-                    triangles[tris + 4] = vert + size;
-                    triangles[tris + 5] = vert + size + 1;
+                    triangles[tris + 4] = vert + xSize + 1;
+                    triangles[tris + 5] = vert + xSize;
                     vert++;
                     tris +=6;
                 }
@@ -606,8 +619,8 @@ namespace IATK
             mesh.triangles = triangles;
 
             Color[] colors = new Color[positions.Length];
-            for (int i = 0, z = 0; z < size; z++) {
-                for (int x = 0; x < size; x++) {
+            for (int i = 0, z = 0; z < zSize; z++) {
+                for (int x = 0; x < xSize; x++) {
                     float height = Mathf.InverseLerp(minTerrainHeight, maxTerrainHeight, positions[i].y);
                     colors[i] = gradient.Evaluate(height);
                     i++;

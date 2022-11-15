@@ -44,7 +44,7 @@ Shader "IATK/Heightmap"
 					float atten = 1.0;
 
 					lightDirection = normalize(_WorldSpaceLightPos0.xyz);
-					float3 diffuseReflection = atten *_LightColor0.xyz*v.color.rgb*max(0.0,dot(normalDirection, lightDirection));
+					float3 diffuseReflection = atten * _LightColor0.xyz * v.color.rgb * max(0.0, dot(normalDirection, lightDirection));
 
 					o.color = float4(diffuseReflection, 1.0);
 					o.position = UnityObjectToClipPos(v.vertex);
