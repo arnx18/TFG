@@ -603,14 +603,14 @@ namespace IATK
             int vert = 0;
             int tris = 0;
 
-            for (int z = 0; z < zSize - 1; z++) {
-                for (int x = 0; x < xSize - 1; x++) {
+            for (int x = 0; x < xSize - 1; x++) {
+                for (int z = 0; z < zSize - 1; z++) {
                     triangles[tris] = vert + 1;
-                    triangles[tris + 1] = vert + xSize;
+                    triangles[tris + 1] = vert + zSize;
                     triangles[tris + 2] = vert;
                     triangles[tris + 3] = vert + 1;
-                    triangles[tris + 4] = vert + xSize + 1;
-                    triangles[tris + 5] = vert + xSize;
+                    triangles[tris + 4] = vert + zSize + 1;
+                    triangles[tris + 5] = vert + zSize;
                     vert++;
                     tris +=6;
                 }
