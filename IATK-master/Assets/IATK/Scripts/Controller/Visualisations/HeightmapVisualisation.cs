@@ -598,25 +598,7 @@ namespace IATK
 
             mesh.vertices = positions;
 
-            int[] triangles = new int[(xSize - 1) * (zSize - 1) * 6];
-
-            int vert = 0;
-            int tris = 0;
-
-            for (int x = 0; x < xSize - 1; x++) {
-                for (int z = 0; z < zSize - 1; z++) {
-                    triangles[tris] = vert + 1;
-                    triangles[tris + 1] = vert + zSize;
-                    triangles[tris + 2] = vert;
-                    triangles[tris + 3] = vert + 1;
-                    triangles[tris + 4] = vert + zSize + 1;
-                    triangles[tris + 5] = vert + zSize;
-                    vert++;
-                    tris +=6;
-                }
-                vert++;
-            }
-            mesh.triangles = triangles;
+            mesh.triangles = getHeightmapIndices(xSize, zSize);
 
             Color[] colors = new Color[positions.Length];
             for (int i = 0, z = 0; z < zSize; z++) {
@@ -676,6 +658,46 @@ namespace IATK
             //meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
             //meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
             meshRenderer.sharedMaterial = material;
+        }
+
+        int[] getHeightmapIndices(int xSize, int zSize) {
+
+            int[] indices = new int[(xSize - 1) * (zSize - 1) * 6];
+
+            int vert = 0;
+            int tris = 0;
+
+            if (xSize >= zSize) {
+                for (int x = 0; x < xSize - 1; x++) {
+                    for (int z = 0; z < zSize - 1; z++) {
+                        indices[tris] = vert + 1;
+                        indices[tris + 1] = vert + zSize;
+                        indices[tris + 2] = vert;
+                        indices[tris + 3] = vert + 1;
+                        indices[tris + 4] = vert + zSize + 1;
+                        indices[tris + 5] = vert + zSize;
+                        vert++;
+                        tris +=6;
+                    }
+                    vert++;
+                }
+            } else {
+                for (int z = 0; z < zSize - 1; z++) {
+                    for (int x = 0; x < xSize - 1; x++) {
+                        indices[tris] = vert;
+                        indices[tris + 1] = vert + xSize;
+                        indices[tris + 2] = vert + 1;
+                        indices[tris + 3] = vert + 1;
+                        indices[tris + 4] = vert + xSize;
+                        indices[tris + 5] = vert + xSize + 1;
+                        vert++;
+                        tris +=6;
+                    }
+                    vert++;
+                }
+            }
+
+            return indices;
         }
 
         bool IsColorKeyApproxEqual(GradientColorKey colorKey1, GradientColorKey colorkey2) {
