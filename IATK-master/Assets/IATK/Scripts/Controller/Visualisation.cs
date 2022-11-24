@@ -138,6 +138,9 @@ namespace IATK
             foreach (var item in previousVisualizations)
             {
                 item.destroyView();
+
+                if (item.MESH != null) item.MESH.Clear();
+                
                 DestroyImmediate(item);
             }
 

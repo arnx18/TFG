@@ -83,6 +83,9 @@ namespace IATK
         public GameObject X_AXIS, Y_AXIS, Z_AXIS;
 
         [HideInInspector]
+        public Mesh MESH;
+
+        [HideInInspector]
         public CreationConfiguration creationConfiguration;
 
         [HideInInspector]

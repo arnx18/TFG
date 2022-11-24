@@ -589,16 +589,16 @@ namespace IATK
             
             if(gradient == null) CreateDefaultGradient();
             
-            Mesh mesh = new Mesh();
+            MESH = new Mesh();
 
             foreach(Vector3 vertex in positions) {
                 if(vertex.y > maxTerrainHeight) maxTerrainHeight = vertex.y;
                 if(vertex.y < minTerrainHeight) minTerrainHeight = vertex.y;
             }
 
-            mesh.vertices = positions;
+            MESH.vertices = positions;
 
-            mesh.triangles = getHeightmapIndices(xSize, zSize);
+            MESH.triangles = getHeightmapIndices(xSize, zSize);
 
             Color[] colors = new Color[positions.Length];
             for (int i = 0, z = 0; z < zSize; z++) {
@@ -608,9 +608,9 @@ namespace IATK
                     i++;
                 }
             }
-            mesh.colors = colors;
+            MESH.colors = colors;
 
-            mesh.RecalculateNormals();
+            MESH.RecalculateNormals();
 
             cacheGradient = new Gradient();
             GradientColorKey[] gradientColorKeys = gradient.colorKeys;
@@ -618,7 +618,7 @@ namespace IATK
             cacheGradient.SetKeys(gradientColorKeys, gradientAlphaKeys);
 
             meshFilter = GetComponent<MeshFilter>();
-            meshFilter.sharedMesh = mesh;
+            meshFilter.sharedMesh = MESH;
  
         }
 
