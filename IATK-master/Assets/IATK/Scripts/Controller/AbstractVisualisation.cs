@@ -62,6 +62,7 @@ namespace IATK
             SCATTERPLOT_MATRIX, 
             PARALLEL_COORDINATES, 
             GRAPH_LAYOUT,
+            HEATMAP,
             HEIGHTMAP
         };
 
