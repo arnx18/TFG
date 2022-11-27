@@ -14,6 +14,9 @@ namespace IATK
         public Gradient gradient = null;
 
         [HideInInspector]
+        public GameObject gradientLegend;
+
+        [HideInInspector]
         public Gradient cacheGradient;
 
         [HideInInspector]
@@ -562,6 +565,7 @@ namespace IATK
                     positions = builder.Positions.ToArray();
 
                     CreateMesh();
+                    CreateLegendMesh();
                     CreateMeshRenderer();
                 }
             }
@@ -702,6 +706,56 @@ namespace IATK
             return true;
         }
 
+        void CreateLegendMesh() {
+
+            float width = 1.0f;
+            float height = 1.0f;
+
+            Mesh legendMesh = new Mesh();
+
+            int vertexCount = gradient.colorKeys.Length * 2;
+
+            Vector3[] vertices = new Vector3[vertexCount];
+            Vector3[] normals = new Vector3[vertexCount];
+            Color[] colors = new Color[vertexCount];
+
+            for (int i = 0; i < gradient.colorKeys.Length; ++i) {
+                vertices[i * 2] = new Vector3(-width / 2f, gradient.colorKeys[i].time - (height / 2f), 0);
+                vertices[i * 2 + 1] = new Vector3(width / 2f, gradient.colorKeys[i].time - (height / 2f), 0); 
+
+                normals[i * 2] = -Vector3.forward;
+                normals[i * 2 + 1] = Vector3.forward; 
+
+                colors[i * 2] = gradient.colorKeys[i].color;
+                colors[i * 2 + 1] = gradient.colorKeys[i].color;
+            }
+
+            legendMesh.vertices = vertices;
+
+            int[] indices = new int[gradient.colorKeys.Length * 6];
+
+            for (int i = 0; i < gradient.colorKeys.Length - 1; ++i) {
+                indices[i * 6] = i * 2;
+                indices[i * 6 + 1] = i * 2 + 2;
+                indices[i * 6 + 2] = i * 2 + 1;
+                indices[i * 6 + 3] = i * 2 + 2;
+                indices[i * 6 + 4] = i * 2 + 3;
+                indices[i * 6 + 5] = i * 2 + 1;
+            }
+
+            legendMesh.triangles = indices;
+            legendMesh.normals = normals;
+            legendMesh.colors = colors;
+
+            gradientLegend = GameObject.Find("Legend");
+            meshFilter = gradientLegend.GetComponent<MeshFilter>();
+            meshFilter.sharedMesh = legendMesh;
+
+            RectTransform transform = gradientLegend.GetComponent<RectTransform> ();
+            transform.localPosition = new Vector3(0.875f, -0.75f, 0);
+            transform.localScale = new Vector3(0.05f, 1, 1);
+        }
+
         // *************************************************************
         // ********************  UNITY METHODS  ************************
         // *************************************************************
@@ -714,26 +768,19 @@ namespace IATK
                 
                 if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length) {
                     CreateMesh();
+                    CreateLegendMesh();
                     return;
                 }
 
                 for(int i = 0; i < gradient.colorKeys.Length; i++) {
                     if (!IsColorKeyApproxEqual(gradient.colorKeys[i], cacheGradient.colorKeys[i])) {
                         CreateMesh();
+                        CreateLegendMesh();
                         return;
                     }
                 }
             }
             
         }
-
-        /*private void OnDrawGizmos() {
-
-            if (vertices == null) return;
-
-            for (int i = 0; i < vertices.Length; i++) {
-            Gizmos.DrawSphere(vertices[i], .1f); 
-            }
-        }*/
     }   
 }

@@ -733,14 +733,5 @@ namespace IATK
             }
             
         }
-
-        /*private void OnDrawGizmos() {
-
-            if (vertices == null) return;
-
-            for (int i = 0; i < vertices.Length; i++) {
-            Gizmos.DrawSphere(vertices[i], .1f); 
-            }
-        }*/
     }   
 }
