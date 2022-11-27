@@ -412,6 +412,24 @@ namespace IATK
                     }
                     break;
                 case AbstractVisualisation.PropertyType.Z:
+                    if (visualisationReference.zDimension.Attribute == "Undefined" && Z_AXIS != null)
+                    {
+                        DestroyImmediate(Z_AXIS);
+                    }
+                    else if (Z_AXIS != null)
+                    {
+                        Axis a = Z_AXIS.GetComponent<Axis>();
+                        a.Initialise(visualisationReference.dataSource, visualisationReference.zDimension, visualisationReference);
+                        BindMinMaxAxisValues(Z_AXIS.GetComponent<Axis>(), visualisationReference.zDimension);
+                    }
+                    else if (visualisationReference.zDimension.Attribute != "Undefined")
+                    {
+                        Vector3 pos = Vector3.zero;
+                        pos.x = 1.095f;
+                        Z_AXIS = CreateAxis(PropertyType.X, visualisationReference.zDimension, pos, new Vector3(0f, 0f, 0f), 2);
+                        Z_AXIS.transform.eulerAngles= new Vector3(0f, 0f, 0f);
+                        DestroyImmediate(Z_AXIS.transform.GetChild(0).gameObject);
+                    }
                     break;
                 case AbstractVisualisation.PropertyType.DimensionFiltering:
                     if (visualisationReference.xDimension.Attribute != "Undefined")
@@ -752,20 +770,18 @@ namespace IATK
             meshFilter.sharedMesh = legendMesh;
 
             RectTransform transform = gradientLegend.GetComponent<RectTransform> ();
-            transform.localPosition = new Vector3(0.875f, -0.75f, 0);
-            transform.localScale = new Vector3(0.05f, 1, 1);
+            transform.localPosition = new Vector3(0.85f, -0.75f, 0);
+            transform.localScale = new Vector3(0.03f, 1, 1);
         }
 
         // *************************************************************
         // ********************  UNITY METHODS  ************************
         // *************************************************************
-
         void Update() {
-
             if (visualisationReference.xDimension.Attribute != "" && visualisationReference.xDimension.Attribute != "Undefined"
                 && visualisationReference.yDimension.Attribute != "" && visualisationReference.yDimension.Attribute != "Undefined"
                 && visualisationReference.zDimension.Attribute != "" && visualisationReference.zDimension.Attribute != "Undefined") {
-                
+
                 if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length) {
                     CreateMesh();
                     CreateLegendMesh();
@@ -780,7 +796,6 @@ namespace IATK
                     }
                 }
             }
-            
         }
     }   
 }
