@@ -17,6 +17,9 @@ namespace IATK
         public GameObject gradientLegend;
 
         [HideInInspector]
+        public GameObject gradientLegendPrefab;
+
+        [HideInInspector]
         public Gradient cacheGradient;
 
         [HideInInspector]
@@ -434,6 +437,8 @@ namespace IATK
                         DestroyImmediate(Z_AXIS.transform.Find("Tip").gameObject);
                         DestroyImmediate(Z_AXIS.transform.Find("MinNormaliser").gameObject);
                         DestroyImmediate(Z_AXIS.transform.Find("MaxNormaliser").gameObject);
+                        gradientLegend.transform.SetParent(Z_AXIS.transform);
+                        
                     }
                     break;
                 case AbstractVisualisation.PropertyType.DimensionFiltering:
@@ -774,7 +779,11 @@ namespace IATK
                 gradientLegend = new GameObject("GradientLegend");
                 gradientLegend.AddComponent<MeshFilter>();
                 gradientLegend.AddComponent<MeshRenderer>();
-                gradientLegend.AddComponent<RectTransform>();
+                gradientLegend.AddComponent<RectTransform>();            
+                
+                RectTransform transform = gradientLegend.GetComponent<RectTransform> ();
+                transform.localPosition = new Vector3(1.05f, 0.5f, 0);
+                transform.localScale = new Vector3(0.03f, 1, 1);
             }
             
             gradientLegend.GetComponent<MeshFilter>().sharedMesh = legendMesh;
@@ -782,9 +791,6 @@ namespace IATK
             Material material = new Material(Shader.Find("IATK/Heatmap"));
             gradientLegend.GetComponent<MeshRenderer>().sharedMaterial = material;
 
-            RectTransform transform = gradientLegend.GetComponent<RectTransform> ();
-            transform.localPosition = new Vector3(1.05f, 0.5f, 0);
-            transform.localScale = new Vector3(0.03f, 1, 1);
         }
 
         // *************************************************************
