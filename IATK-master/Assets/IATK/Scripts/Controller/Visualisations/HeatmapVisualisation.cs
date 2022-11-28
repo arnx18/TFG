@@ -28,6 +28,9 @@ namespace IATK
         [HideInInspector]
         public MeshFilter meshFilter;
 
+        [HideInInspector]
+        public MeshFilter meshFilterGradient;
+
         private int xSize;
         private int zSize;
         private float minTerrainHeight;
@@ -428,7 +431,9 @@ namespace IATK
                         pos.x = 1.095f;
                         Z_AXIS = CreateAxis(PropertyType.X, visualisationReference.zDimension, pos, new Vector3(0f, 0f, 0f), 2);
                         Z_AXIS.transform.eulerAngles= new Vector3(0f, 0f, 0f);
-                        DestroyImmediate(Z_AXIS.transform.GetChild(0).gameObject);
+                        DestroyImmediate(Z_AXIS.transform.Find("Tip").gameObject);
+                        DestroyImmediate(Z_AXIS.transform.Find("MinNormaliser").gameObject);
+                        DestroyImmediate(Z_AXIS.transform.Find("MaxNormaliser").gameObject);
                     }
                     break;
                 case AbstractVisualisation.PropertyType.DimensionFiltering:
@@ -765,12 +770,20 @@ namespace IATK
             legendMesh.normals = normals;
             legendMesh.colors = colors;
 
-            gradientLegend = GameObject.Find("Legend");
-            meshFilter = gradientLegend.GetComponent<MeshFilter>();
-            meshFilter.sharedMesh = legendMesh;
+            if (gradientLegend == null) {
+                gradientLegend = new GameObject("GradientLegend");
+                gradientLegend.AddComponent<MeshFilter>();
+                gradientLegend.AddComponent<MeshRenderer>();
+                gradientLegend.AddComponent<RectTransform>();
+            }
+            
+            gradientLegend.GetComponent<MeshFilter>().sharedMesh = legendMesh;
+            
+            Material material = new Material(Shader.Find("IATK/Heatmap"));
+            gradientLegend.GetComponent<MeshRenderer>().sharedMaterial = material;
 
             RectTransform transform = gradientLegend.GetComponent<RectTransform> ();
-            transform.localPosition = new Vector3(0.85f, -0.75f, 0);
+            transform.localPosition = new Vector3(1.05f, 0.5f, 0);
             transform.localScale = new Vector3(0.03f, 1, 1);
         }
 
