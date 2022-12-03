@@ -599,35 +599,9 @@ namespace IATK
 
             MESH = new Mesh();
 
-            Vector3[] vertices = (Vector3[]) positions.Clone();
-
-            for (int i = 0; i < positions.Length; ++i) {
-                float vertexHeight = positions[i].y;
-                if (vertexHeight > maxTerrainHeight) maxTerrainHeight = vertexHeight;
-                if (vertexHeight < minTerrainHeight) minTerrainHeight = vertexHeight;
-                vertices[i].y = 0;
-            }
-
-            Vector3 center = new Vector3(0, 0, 0); //any V3 you want as the pivot point.
-            Quaternion newRotation = new Quaternion();
-            newRotation.eulerAngles = new Vector3(-90,0,0); //the degrees the vertices are to be rotated, for example (0,90,0) 
-                
-            for(int i = 0; i < vertices.Length; i++) { //vertices being the array of vertices of your mesh
-                vertices[i] = newRotation * (vertices[i] - center) + center;
-            }
-
-            MESH.vertices = vertices;
+            MESH.vertices = getHeightmapVertices();
             MESH.triangles = getHeightmapIndices();
-
-            Color[] colors = new Color[positions.Length];
-            for (int i = 0, z = 0; z < zSize; z++) {
-                for (int x = 0; x < xSize; x++) {
-                    float height = Mathf.InverseLerp(minTerrainHeight, maxTerrainHeight, positions[i].y);
-                    colors[i] = gradient.Evaluate(height);
-                    i++;
-                }
-            }
-            MESH.colors = colors;
+            MESH.colors = getHeightmapColors();
 
             MESH.RecalculateNormals();
 
@@ -667,16 +641,26 @@ namespace IATK
             gradient.SetKeys(gradientColorKeys, gradientAlphaKeys);
         }
 
-        void CreateMeshRenderer() {
+        Vector3[] getHeightmapVertices() {
 
-            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-            Material material = new Material(Shader.Find("IATK/Heatmap"));
-            //meshRenderer.allowOcclusionWhenDynamic = false;
-            //meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            //meshRenderer.receiveShadows = true;
-            //meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
-            //meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-            meshRenderer.sharedMaterial = material;
+             Vector3[] vertices = (Vector3[]) positions.Clone();
+
+            for (int i = 0; i < positions.Length; ++i) {
+                float vertexHeight = positions[i].y;
+                if (vertexHeight > maxTerrainHeight) maxTerrainHeight = vertexHeight;
+                if (vertexHeight < minTerrainHeight) minTerrainHeight = vertexHeight;
+                vertices[i].y = 0;
+            }
+
+            Vector3 center = new Vector3(0, 0, 0); 
+            Quaternion newRotation = new Quaternion();
+            newRotation.eulerAngles = new Vector3(-90,0,0); 
+                
+            for(int i = 0; i < vertices.Length; i++) { 
+                vertices[i] = newRotation * (vertices[i] - center) + center;
+            }
+
+            return vertices;
         }
 
         int[] getHeightmapIndices() {
@@ -719,15 +703,21 @@ namespace IATK
             return indices;
         }
 
-        bool IsColorKeyApproxEqual(GradientColorKey colorKey1, GradientColorKey colorkey2) {
+        Color[] getHeightmapColors() {
 
-            if(Mathf.Abs(colorKey1.time - colorkey2.time) > 0.01f) return false;
-            if(Mathf.Abs(colorKey1.color.r - colorkey2.color.r) > 0.01f) return false;
-            if(Mathf.Abs(colorKey1.color.g - colorkey2.color.g) > 0.01f) return false;
-            if(Mathf.Abs(colorKey1.color.b - colorkey2.color.b) > 0.01f) return false;
-            return true;
+            Color[] colors = new Color[positions.Length];
+
+            for (int i = 0, z = 0; z < zSize; z++) {
+                for (int x = 0; x < xSize; x++) {
+                    float height = Mathf.InverseLerp(minTerrainHeight, maxTerrainHeight, positions[i].y);
+                    colors[i] = gradient.Evaluate(height);
+                    i++;
+                }
+            }
+
+            return colors;
         }
-
+        
         void CreateLegendMesh() {
 
             float width = 1.0f;
@@ -785,6 +775,22 @@ namespace IATK
             Material material = new Material(Shader.Find("IATK/Heatmap"));
             gradientLegend.GetComponent<MeshRenderer>().sharedMaterial = material;
 
+        }
+
+        void CreateMeshRenderer() {
+
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+            Material material = new Material(Shader.Find("IATK/Heatmap"));
+            meshRenderer.sharedMaterial = material;
+        }
+
+        bool IsColorKeyApproxEqual(GradientColorKey colorKey1, GradientColorKey colorkey2) {
+
+            if(Mathf.Abs(colorKey1.time - colorkey2.time) > 0.01f) return false;
+            if(Mathf.Abs(colorKey1.color.r - colorkey2.color.r) > 0.01f) return false;
+            if(Mathf.Abs(colorKey1.color.g - colorkey2.color.g) > 0.01f) return false;
+            if(Mathf.Abs(colorKey1.color.b - colorkey2.color.b) > 0.01f) return false;
+            return true;
         }
 
         // *************************************************************

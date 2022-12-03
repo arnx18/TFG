@@ -7,6 +7,12 @@ Shader "IATK/Heatmap"
     {
         Pass
         {
+            Cull [_CullMode]
+            ZWrite On
+            Lighting Off
+            Fog { Mode Off }
+            ZTest [unity_GUIZTestMode]
+            Blend One OneMinusSrcAlpha
 
             CGPROGRAM
 				#pragma vertex VS_Main

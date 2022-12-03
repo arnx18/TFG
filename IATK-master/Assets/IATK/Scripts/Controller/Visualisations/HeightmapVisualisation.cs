@@ -597,18 +597,8 @@ namespace IATK
             }
 
             MESH.vertices = positions;
-
-            MESH.triangles = getHeightmapIndices(xSize, zSize);
-
-            Color[] colors = new Color[positions.Length];
-            for (int i = 0, z = 0; z < zSize; z++) {
-                for (int x = 0; x < xSize; x++) {
-                    float height = Mathf.InverseLerp(minTerrainHeight, maxTerrainHeight, positions[i].y);
-                    colors[i] = gradient.Evaluate(height);
-                    i++;
-                }
-            }
-            MESH.colors = colors;
+            MESH.triangles = getHeightmapIndices();
+            MESH.colors = getHeightmapColors();
 
             MESH.RecalculateNormals();
 
@@ -648,19 +638,7 @@ namespace IATK
             gradient.SetKeys(gradientColorKeys, gradientAlphaKeys);
         }
 
-        void CreateMeshRenderer() {
-
-            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-            Material material = new Material(Shader.Find("IATK/Heightmap"));
-            //meshRenderer.allowOcclusionWhenDynamic = false;
-            //meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            //meshRenderer.receiveShadows = true;
-            //meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
-            //meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-            meshRenderer.sharedMaterial = material;
-        }
-
-        int[] getHeightmapIndices(int xSize, int zSize) {
+        int[] getHeightmapIndices() {
 
             int[] indices = new int[(xSize - 1) * (zSize - 1) * 6];
 
@@ -698,6 +676,28 @@ namespace IATK
             }
 
             return indices;
+        }
+
+        Color[] getHeightmapColors() {
+
+            Color[] colors = new Color[positions.Length];
+
+            for (int i = 0, z = 0; z < zSize; z++) {
+                for (int x = 0; x < xSize; x++) {
+                    float height = Mathf.InverseLerp(minTerrainHeight, maxTerrainHeight, positions[i].y);
+                    colors[i] = gradient.Evaluate(height);
+                    i++;
+                }
+            }
+
+            return colors;
+        }
+
+        void CreateMeshRenderer() {
+
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+            Material material = new Material(Shader.Find("IATK/Heightmap"));
+            meshRenderer.sharedMaterial = material;
         }
 
         bool IsColorKeyApproxEqual(GradientColorKey colorKey1, GradientColorKey colorkey2) {

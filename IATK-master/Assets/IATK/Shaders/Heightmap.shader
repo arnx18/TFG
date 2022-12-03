@@ -7,21 +7,22 @@ Shader "IATK/Heightmap"
     {
         Pass
         {
-			Tags {
-				"LightMode" = "ForwardBase"
-			}
+            Cull [_CullMode]
+            ZWrite On
+            Lighting Off
+            Fog { Mode Off }
+            ZTest [unity_GUIZTestMode]
+            Blend One OneMinusSrcAlpha
 
             CGPROGRAM
 				#pragma vertex VS_Main
 				#pragma fragment FS_Main
                 #include "UnityCG.cginc"
-                #include "UnityLightingCommon.cginc" // for _LightColor0
 
                 struct VS_INPUT
                 {
                     float4 vertex : POSITION;
                     float4 color : COLOR;
-                    float3 normal: NORMAL;
                 };
 
                 struct v2f
@@ -39,14 +40,7 @@ Shader "IATK/Heightmap"
                 {
                     v2f o;
 
-					float3 normalDirection = normalize(mul(float4(v.normal, 0.0),unity_WorldToObject).xyz);
-					float3 lightDirection;
-					float atten = 1.0;
-
-					lightDirection = normalize(_WorldSpaceLightPos0.xyz);
-					float3 diffuseReflection = atten * _LightColor0.xyz * v.color.rgb * max(0.0, dot(normalDirection, lightDirection));
-
-					o.color = float4(diffuseReflection, 1.0);
+					o.color = v.color;
 					o.position = UnityObjectToClipPos(v.vertex);
 
 					return o;
