@@ -17,9 +17,6 @@ namespace IATK
         public GameObject gradientLegend;
 
         [HideInInspector]
-        public GameObject gradientLegendPrefab;
-
-        [HideInInspector]
         public Gradient cacheGradient;
 
         [HideInInspector]
@@ -30,9 +27,6 @@ namespace IATK
 
         [HideInInspector]
         public MeshFilter meshFilter;
-
-        [HideInInspector]
-        public MeshFilter meshFilterGradient;
 
         private int xSize;
         private int zSize;
