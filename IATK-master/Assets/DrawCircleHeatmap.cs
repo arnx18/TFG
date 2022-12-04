@@ -24,7 +24,7 @@ namespace IATK
         [HideInInspector]
         float[,] dataArray; 
         
-        [Range(0.051f, 0.075f)]
+        [Range(0.025f, 0.075f)]
         public float radius = 0.055f;
 
         [Range(0.003f, 0.02f)]
@@ -39,7 +39,7 @@ namespace IATK
         public int circledValue;
 
         [HideInInspector]
-        public int steps = 100;
+        public int steps = 50;
         
         void Start() {   
 
@@ -105,13 +105,17 @@ namespace IATK
             circleRenderer.endWidth = width;
             circleRenderer.positionCount = steps;
 
+            float theta = 0f;
+
             for(int currentStep = 0; currentStep < steps; ++currentStep) {
 
-                float circumferenceProgress = (float) currentStep / steps;
-                float currentRadian = circumferenceProgress * 2 * Mathf.PI;
+                float x = Mathf.Sin(Mathf.Deg2Rad * theta) * radius;
+                float y = Mathf.Cos(Mathf.Deg2Rad * theta) * radius;
 
-                Vector3 currentPosition = new Vector3(Mathf.Cos(currentRadian) * radius, Mathf.Sin(currentRadian) * radius, 0f);
+                Vector3 currentPosition = new Vector3(x, y, 0f);
                 circleRenderer.SetPosition(currentStep, currentPosition);
+                
+                theta += 380f / steps;
             }
         }
     }
