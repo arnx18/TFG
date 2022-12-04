@@ -20,9 +20,6 @@ namespace IATK
         public Gradient cacheGradient;
 
         [HideInInspector]
-        public Vector3[] vertices;
-
-        [HideInInspector]
         public Vector3[] positions;
 
         [HideInInspector]
