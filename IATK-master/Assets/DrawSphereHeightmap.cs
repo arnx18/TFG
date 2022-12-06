@@ -27,6 +27,11 @@ namespace IATK
         [Range(0.025f, 0.075f)]
         public float radius = 0.055f;
 
+        [Range(0.25f, 1f)]
+        public float transparency = 0.5f;
+
+        public Color sphereColor = Color.red;
+
         [Range(0,29)]
         public int x = 0;
 
@@ -45,13 +50,13 @@ namespace IATK
                 sphere.transform.SetParent(GetComponent<HeightmapVisualisation>().transform);
 
                 sphereRenderer = sphere.GetComponent<MeshRenderer>();
-                sphereRenderer.material = new Material(Shader.Find("IATK/Heightmap"));
+                sphereRenderer.material = new Material(Shader.Find("IATK/TransparentSphere"));
 
-                int sphereVertices = sphere.GetComponent<MeshFilter>().sharedMesh.vertices.Length;
-                Color[] newSphereColors = new Color[sphereVertices];
-                for (int i = 0; i < sphereVertices; ++i) newSphereColors[i] = Color.red;
-                sphere.GetComponent<MeshFilter>().sharedMesh.colors = newSphereColors;
+                setSphereColor();
+
                 sphere.transform.localScale = new Vector3(radius, radius, radius);
+
+                sphereRenderer.sharedMaterial.SetFloat("_Transparency", transparency);
             
                 positions = GetComponent<HeightmapVisualisation>().positions;
 
@@ -60,8 +65,13 @@ namespace IATK
         }
 
         void Update() {
+            
             sphere.transform.position = new Vector3(positions[x * 30].x, positions[x * 30 + z].y, positions[z].z); 
             sphere.transform.localScale = new Vector3(radius, radius, radius);
+
+            setSphereColor();
+
+            sphereRenderer.sharedMaterial.SetFloat("_Transparency", transparency);
             sphereValue = (int) dataArray[x * 30 + z, 2];
         } 
         
@@ -90,6 +100,15 @@ namespace IATK
             }
             
             sphereValue = (int) dataArray[x * 30 + z, 2];
+        }
+
+        void setSphereColor() {
+            int sphereVertices = sphere.GetComponent<MeshFilter>().sharedMesh.vertices.Length;
+            Color[] newSphereColor = new Color[sphereVertices];
+            for (int i = 0; i < sphereVertices; ++i) {
+                newSphereColor[i] = sphereColor;
+            }
+            sphere.GetComponent<MeshFilter>().sharedMesh.colors = newSphereColor;
         }
 
     }

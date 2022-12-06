@@ -30,6 +30,8 @@ namespace IATK
         [Range(0.003f, 0.02f)]
         public float width = 0.01f;
 
+        public Color circleColor = Color.red;
+
         [Range(0,29)]
         public int x = 0;
 
@@ -51,8 +53,8 @@ namespace IATK
 
                 circleRenderer = circle.GetComponent<LineRenderer>();
                 circleRenderer.material = new Material(Shader.Find("IATK/Heatmap"));
-                circleRenderer.startColor = Color.red;
-                circleRenderer.endColor = Color.red;
+                circleRenderer.startColor = circleColor;
+                circleRenderer.endColor = circleColor;
                 circleRenderer.useWorldSpace = false;
             
                 positions = GetComponent<HeatmapVisualisation>().positions;
@@ -101,6 +103,8 @@ namespace IATK
         void Draw() {
 
             circle.transform.position = new Vector3(positions[x * 30].x, positions[y].z, -0.02f);
+            circleRenderer.startColor = circleColor;
+            circleRenderer.endColor = circleColor;
             circleRenderer.startWidth = width;
             circleRenderer.endWidth = width;
             circleRenderer.positionCount = steps;
