@@ -57,11 +57,10 @@ namespace IATK
                 circleRenderer.endColor = circleColor;
                 circleRenderer.useWorldSpace = false;
             
-                positions = GetComponent<HeatmapVisualisation>().positions;
-
-                getDataArray();
+                positions = GetComponent<HeatmapVisualisation>().positions;  
+                getDataArray(); 
             }          
-                  
+                 
             Draw();
         }
 
@@ -69,7 +68,10 @@ namespace IATK
 
             Draw();
 
-            circledValue = (int) dataArray[x * 30 + y, 2];
+            if (dataArray == null) {
+                getDataArray();
+            }
+            circledValue = (int) dataArray[x * 30 + y, 2];         
         } 
         
         void getDataArray() {
@@ -78,7 +80,8 @@ namespace IATK
             String data = dataSource.data.ToString();
 
             string[] lines = data.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            dataArray = new float[lines.Length - 1, dataSource.DimensionCount];
+            int dimensions = lines[1].Split(new char[] { ',', '\t', ';'}).Count();
+            dataArray = new float[lines.Length - 1, dimensions];
 
             if (lines.Length > 1) {
                 for (int i = 1; i < lines.Length; i++) {
@@ -87,7 +90,7 @@ namespace IATK
                     for (int k = 0; k < values.Count(); k++) {
                         string cleanedValue = values[k].Replace("\r", string.Empty);
 
-                        if (k <= dataSource.DimensionCount - 1) {
+                        if (k <= dimensions - 1) {
                             double result = 0.0f;
                             double.TryParse(cleanedValue, out result);
                             dataArray[i - 1, k] = (float)result;
@@ -102,7 +105,8 @@ namespace IATK
 
         void Draw() {
 
-            circle.transform.position = new Vector3(positions[x * 30].x, positions[y].z, -0.02f);
+            circle.transform.position = GetComponent<HeatmapVisualisation>().transform.position 
+            + GetComponent<HeatmapVisualisation>().transform.TransformDirection(new Vector3(positions[x * 30].x, positions[y].z, -0.02f));
             circleRenderer.startColor = circleColor;
             circleRenderer.endColor = circleColor;
             circleRenderer.startWidth = width;
