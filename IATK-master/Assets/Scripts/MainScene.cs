@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class MainScene : MonoBehaviour
 {
-    public void StartButton() {
-        SceneManager.LoadScene("HeatmapMainScene");
+    public void FinishButton() {
+        SceneManager.LoadScene("MainMenu");
     }
 }
