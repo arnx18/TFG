@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +22,8 @@ public class HeatmapMainScene : MonoBehaviour
 
     private Stopwatch sw;
 
+    private List<double> elapsedSecondsArray;
+
     private void Awake() {
         startButton.interactable = true;
         nextButton.interactable = false;
@@ -27,6 +32,7 @@ public class HeatmapMainScene : MonoBehaviour
 
     public void StartTest() {
         startButton.interactable = false;
+        elapsedSecondsArray = new List<double>();
         SelectHeatmap(0);
         sw = new Stopwatch();
         sw.Start();
@@ -45,13 +51,23 @@ public class HeatmapMainScene : MonoBehaviour
         ++currentHeatmap;
         SelectHeatmap(currentHeatmap);
         sw.Stop();
-        print(sw.Elapsed.TotalSeconds);
+        elapsedSecondsArray.Add(sw.Elapsed.TotalSeconds);
         sw = new Stopwatch();
         sw.Start();
     }
 
     public void FinishTest() {
         sw.Stop();
-        print(sw.Elapsed.TotalSeconds);
+        elapsedSecondsArray.Add(sw.Elapsed.TotalSeconds);
+        printTestResults();
     }
+
+    private void printTestResults() {
+        String results = "";
+        foreach(float time in elapsedSecondsArray) {
+            results += time.ToString() + "\n";
+        }
+        print(results);
+    }
+
 }
