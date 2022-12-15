@@ -66,8 +66,9 @@ namespace IATK
 
         void Update() {
             
+            Vector3 scale = GetComponent<HeightmapVisualisation>().transform.localScale;
             sphere.transform.position = GetComponent<HeightmapVisualisation>().transform.position 
-            + GetComponent<HeightmapVisualisation>().transform.TransformDirection(new Vector3(positions[x * 30].x, positions[x * 30 + z].y, positions[z].z)); 
+            + GetComponent<HeightmapVisualisation>().transform.TransformDirection(new Vector3(positions[x * 30].x * scale.x, positions[x * 30 + z].y * scale.y, positions[z].z * scale.z)); 
             sphere.transform.localScale = new Vector3(radius, radius, radius);
 
             setSphereColor();

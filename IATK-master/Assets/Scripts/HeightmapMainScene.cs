@@ -21,7 +21,6 @@ public class HeightmapMainScene : MonoBehaviour
     private int currentHeatmap;
 
     private Stopwatch sw;
-
     private List<double> elapsedSecondsArray;
 
     private void Awake() {
