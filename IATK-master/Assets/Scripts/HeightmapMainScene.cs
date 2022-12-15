@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 public class HeightmapMainScene : MonoBehaviour
 {
@@ -27,6 +28,21 @@ public class HeightmapMainScene : MonoBehaviour
         startButton.interactable = true;
         nextButton.interactable = false;
         finishButton.interactable = false;
+    }
+
+    private void Update() {
+         
+        var inputDevices = new List<UnityEngine.XR.InputDevice>();
+        UnityEngine.XR.InputDevices.GetDevices(inputDevices);
+        //print(inputDevices.Count);
+ 
+        foreach (var device in inputDevices) {
+
+            bool triggerValue;
+            if (device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue) {
+                print("Trigger button is pressed");
+            }
+        }
     }
 
     public void StartTest() {
