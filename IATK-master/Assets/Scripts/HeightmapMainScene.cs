@@ -7,46 +7,37 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class HeightmapMainScene : MonoBehaviour
 {
-    [SerializeField]
-    private Button startButton;
+    public InputActionReference toggleReference = null;
 
-    [SerializeField]
-    private Button nextButton;
-
-    [SerializeField]
-    private Button finishButton;
-    
-    private int currentHeatmap;
-
+    private Boolean started = false;
+    private int currentHeightmap;
+    private Boolean triggerValue;
     private Stopwatch sw;
     private List<double> elapsedSecondsArray;
 
     private void Awake() {
-        startButton.interactable = true;
-        nextButton.interactable = false;
-        finishButton.interactable = false;
+        toggleReference.action.started += Toggle;
     }
 
-    private void Update() {
-         
-        var inputDevices = new List<UnityEngine.XR.InputDevice>();
-        UnityEngine.XR.InputDevices.GetDevices(inputDevices);
-        //print(inputDevices.Count);
- 
-        foreach (var device in inputDevices) {
+    private void OnDestroy() {
+        toggleReference.action.started -= Toggle;
+    }
 
-            bool triggerValue;
-            if (device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out triggerValue) && triggerValue) {
-                print("Trigger button is pressed");
-            }
+    private void Toggle(InputAction.CallbackContext context) {
+        if (!started) {
+            StartTest();
+        } else {
+            NextHeightmap();
         }
     }
 
     public void StartTest() {
-        startButton.interactable = false;
+        started = true;
         elapsedSecondsArray = new List<double>();
         SelectHeightmap(0);
         sw = new Stopwatch();
@@ -54,27 +45,23 @@ public class HeightmapMainScene : MonoBehaviour
     }
 
     private void SelectHeightmap(int index) {
-        nextButton.interactable = (index != transform.childCount - 1);
-        finishButton.interactable = (index == transform.childCount - 1);
-        
         for (int i = 0; i < transform.childCount; ++i) {
             transform.GetChild(i).gameObject.SetActive(i == index);
         }
     }
 
     public void NextHeightmap() {
-        ++currentHeatmap;
-        SelectHeightmap(currentHeatmap);
+        ++currentHeightmap;
+        SelectHeightmap(currentHeightmap);
         sw.Stop();
         elapsedSecondsArray.Add(sw.Elapsed.TotalSeconds);
-        sw = new Stopwatch();
-        sw.Start();
-    }
-
-    public void FinishTest() {
-        sw.Stop();
-        elapsedSecondsArray.Add(sw.Elapsed.TotalSeconds);
-        printTestResults();
+        if (currentHeightmap == transform.childCount) {
+            printTestResults();
+            SceneManager.LoadScene("MainMenu");
+        } else {
+            sw = new Stopwatch();
+            sw.Start();
+        }        
     }
 
     private void printTestResults() {
