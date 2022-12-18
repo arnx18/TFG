@@ -16,9 +16,6 @@ namespace IATK
         public MeshRenderer sphereRenderer;
 
         [HideInInspector]
-        public HeatmapVisualisation heatmapVisualisation;
-
-        [HideInInspector]
         public Vector3[] positions;
 
         [HideInInspector]
@@ -54,7 +51,12 @@ namespace IATK
 
                 setSphereColor();
 
-                sphere.transform.localScale = new Vector3(radius, radius, radius);
+                Vector3 scale = GetComponent<HeightmapVisualisation>().transform.localScale;
+                if (scale.x != 0 && scale.y != 0 && scale.z != 0) {
+                    sphere.transform.localScale = new Vector3(radius / scale.x, radius / scale.y, radius / scale.z);
+                } else {
+                    sphere.transform.localScale = new Vector3(radius, radius, radius);
+                }
 
                 sphereRenderer.sharedMaterial.SetFloat("_Transparency", transparency);
             
@@ -69,8 +71,13 @@ namespace IATK
             Vector3 scale = GetComponent<HeightmapVisualisation>().transform.localScale;
             sphere.transform.position = GetComponent<HeightmapVisualisation>().transform.position 
             + GetComponent<HeightmapVisualisation>().transform.TransformDirection(new Vector3(positions[x * 30].x * scale.x, positions[x * 30 + z].y * scale.y, positions[z].z * scale.z)); 
-            sphere.transform.localScale = new Vector3(radius, radius, radius);
-
+            
+            if (scale.x != 0 && scale.y != 0 && scale.z != 0) {
+                sphere.transform.localScale = new Vector3(radius / scale.x, radius / scale.y, radius / scale.z);
+            } else {
+                sphere.transform.localScale = new Vector3(radius, radius, radius);
+            }
+            
             setSphereColor();
 
             sphereRenderer.sharedMaterial.SetFloat("_Transparency", transparency);
