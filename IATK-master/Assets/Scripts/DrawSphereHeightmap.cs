@@ -21,11 +21,11 @@ namespace IATK
         [HideInInspector]
         float[,] dataArray; 
         
-        [Range(0.025f, 0.075f)]
-        public float radius = 0.055f;
+        [Range(0.01f, 0.075f)]
+        public float radius = 0.0175f;
 
-        [Range(0.25f, 1f)]
-        public float transparency = 0.5f;
+        [Range(0f, 1f)]
+        public float transparency = 0.4f;
 
         public Color sphereColor = Color.red;
 

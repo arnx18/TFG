@@ -25,10 +25,10 @@ namespace IATK
         float[,] dataArray; 
         
         [Range(0.025f, 0.075f)]
-        public float radius = 0.055f;
+        public float radius = 0.025f;
 
         [Range(0.003f, 0.02f)]
-        public float width = 0.01f;
+        public float width = 0.003f;
 
         public Color circleColor = Color.red;
 

@@ -588,9 +588,17 @@ namespace IATK
             
             MESH = new Mesh();
 
-            foreach(Vector3 vertex in positions) {
-                if(vertex.y > maxTerrainHeight) maxTerrainHeight = vertex.y;
-                if(vertex.y < minTerrainHeight) minTerrainHeight = vertex.y;
+            maxTerrainHeight = positions[0].y;
+            minTerrainHeight = positions[0].y;
+
+            for(int i = 0; i < positions.Length; ++i) { 
+
+                positions[i].x *= visualisationReference.width;
+                positions[i].y *= visualisationReference.height;
+                positions[i].z *= visualisationReference.depth;
+
+                if(positions[i].y >= maxTerrainHeight) maxTerrainHeight = positions[i].y;
+                if(positions[i].y <= minTerrainHeight) minTerrainHeight = positions[i].y;
             }
 
             MESH.vertices = positions;

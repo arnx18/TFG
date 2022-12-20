@@ -15,6 +15,9 @@ namespace IATK
 
         [HideInInspector]
         public GameObject gradientLegend;
+        
+        [HideInInspector]
+        public GameObject legendHolder;
 
         [HideInInspector]
         public Gradient cacheGradient;
@@ -425,10 +428,8 @@ namespace IATK
                         pos.x = 1.095f;
                         Z_AXIS = CreateAxis(PropertyType.X, visualisationReference.zDimension, pos, new Vector3(0f, 0f, 0f), 2);
                         Z_AXIS.transform.eulerAngles= new Vector3(0f, 0f, 0f);
-                        DestroyImmediate(Z_AXIS.transform.Find("Tip").gameObject);
-                        DestroyImmediate(Z_AXIS.transform.Find("MinNormaliser").gameObject);
-                        DestroyImmediate(Z_AXIS.transform.Find("MaxNormaliser").gameObject);
-                        gradientLegend.transform.SetParent(Z_AXIS.transform);
+                        legendHolder.transform.SetParent(Z_AXIS.transform);
+                        gradientLegend.transform.SetParent(legendHolder.transform);
                         
                     }
                     break;
@@ -756,16 +757,21 @@ namespace IATK
             legendMesh.normals = normals;
             legendMesh.colors = colors;
 
+            if (legendHolder == null) {
+                legendHolder = new GameObject("legendHolder");
+                legendHolder.transform.localPosition = new Vector3(-0.045f, 0f, 0f);
+            }
+
             if (gradientLegend == null) {
                 gradientLegend = new GameObject("GradientLegend");
                 gradientLegend.AddComponent<MeshFilter>();
-                gradientLegend.AddComponent<MeshRenderer>();
-                gradientLegend.AddComponent<RectTransform>();            
-                
-                RectTransform transform = gradientLegend.GetComponent<RectTransform> ();
-                transform.localPosition = new Vector3(1.05f, 0.5f, 0);
-                transform.localScale = new Vector3(0.03f, 1, 1);
+                gradientLegend.AddComponent<MeshRenderer>();          
+                gradientLegend.transform.localPosition = new Vector3(1.05f, 0.5f, 0f);
+                gradientLegend.transform.localScale = new Vector3(0.03f, 1, 1);
             }
+
+            legendHolder.transform.localScale = new Vector3(1, visualisationReference.depth, 1);
+            
             
             gradientLegend.GetComponent<MeshFilter>().sharedMesh = legendMesh;
             
@@ -798,7 +804,7 @@ namespace IATK
                 && visualisationReference.yDimension.Attribute != "" && visualisationReference.yDimension.Attribute != "Undefined"
                 && visualisationReference.zDimension.Attribute != "" && visualisationReference.zDimension.Attribute != "Undefined") {
 
-                if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length) {
+                if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length || visualisationReference.depth != 1) {
                     CreateMesh();
                     CreateLegendMesh();
                     return;
