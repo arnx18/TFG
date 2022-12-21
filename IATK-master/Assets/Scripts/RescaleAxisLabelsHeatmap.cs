@@ -18,7 +18,7 @@ namespace IATK
         }
 
         void Update() {
-            RescaleAxis();
+            //RescaleAxis();
         } 
 
         void RescaleAxis() {
@@ -33,6 +33,8 @@ namespace IATK
             transform.Find("Axis y/MaxNormaliser").gameObject.SetActive(enableAxisY);
             transform.Find("Axis z/AttributeLabel").gameObject.SetActive(false);
             transform.Find("Axis z/Tip").gameObject.SetActive(false);
+            transform.Find("Axis z/MinNormaliser").gameObject.SetActive(false);
+            transform.Find("Axis z/MaxNormaliser").gameObject.SetActive(false);
             transform.Find("Axis z").localScale = new Vector3(1f, 2.225f, 1f);
 
             Transform axisZLabels = transform.Find("Axis z/AxisLabels");

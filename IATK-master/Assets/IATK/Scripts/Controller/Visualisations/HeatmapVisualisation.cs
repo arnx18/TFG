@@ -804,7 +804,7 @@ namespace IATK
                 && visualisationReference.yDimension.Attribute != "" && visualisationReference.yDimension.Attribute != "Undefined"
                 && visualisationReference.zDimension.Attribute != "" && visualisationReference.zDimension.Attribute != "Undefined") {
 
-                if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length || visualisationReference.depth != 1) {
+                if(gradient.colorKeys.Length != cacheGradient.colorKeys.Length) {
                     CreateMesh();
                     CreateLegendMesh();
                     return;
