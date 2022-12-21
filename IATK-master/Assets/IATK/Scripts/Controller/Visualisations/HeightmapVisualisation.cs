@@ -595,8 +595,8 @@ namespace IATK
 
                 positions[i].x *= visualisationReference.width;
                 positions[i].y *= visualisationReference.height;
-                positions[i].z *= visualisationReference.depth;
-
+                positions[i].z *= visualisationReference.depth; 
+                
                 if(positions[i].y >= maxTerrainHeight) maxTerrainHeight = positions[i].y;
                 if(positions[i].y <= minTerrainHeight) minTerrainHeight = positions[i].y;
             }
